@@ -43,26 +43,24 @@ const MemoryJar = ({ onClose }) => {
       } else {
         clearInterval(typingInterval);
       }
-    }, 45); // Speed of the typing (45ms per character)
+    }, 45); 
 
     return () => clearInterval(typingInterval);
   }, [openedMemory]);
 
   const catchMemory = () => {
-    if (openedMemory) return; // Prevent clicking if a memory is already open
-    
-    // Pick a random memory
+    if (openedMemory) return; 
     const newMemory = MEMORIES[Math.floor(Math.random() * MEMORIES.length)];
     setOpenedMemory(newMemory);
   };
 
   const putMemoryBack = (e) => {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     setOpenedMemory(null);
   };
 
   return (
-    <div className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center p-4 overflow-hidden perspective-1000">
+    <div className="fixed inset-0 bg-black/95 z-50 flex flex-col items-center justify-center p-4 overflow-hidden">
       
       {/* Custom Animations */}
       <style>{`
@@ -91,7 +89,7 @@ const MemoryJar = ({ onClose }) => {
       {/* Top Close Button */}
       <button 
         onClick={onClose} 
-        className={`absolute top-6 right-6 transition duration-500 z-[60] ${openedMemory ? 'text-gray-700 opacity-0 pointer-events-none' : 'text-gray-500 hover:text-white opacity-100'}`}
+        className={`absolute top-6 right-6 transition duration-500 z-[60] ${openedMemory ? 'opacity-0 pointer-events-none' : 'text-gray-500 hover:text-white opacity-100'}`}
       >
         <X className="w-8 h-8" />
       </button>
@@ -107,7 +105,6 @@ const MemoryJar = ({ onClose }) => {
 
       {/* The Jar Container */}
       <div className="relative">
-        {/* The Glowing Jar */}
         <div 
           onClick={catchMemory}
           className={`relative w-64 h-80 rounded-[40px] border-2 border-indigo-500/30 bg-gradient-to-b from-indigo-900/20 to-indigo-500/10 backdrop-blur-md cursor-pointer transition-all duration-700 overflow-hidden group 
@@ -129,11 +126,13 @@ const MemoryJar = ({ onClose }) => {
           
           <Sparkles className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-yellow-200/50 transition-all duration-500 z-20 ${openedMemory ? 'opacity-0' : 'group-hover:text-yellow-200 group-hover:scale-110'}`} />
         </div>
+      </div>
 
-        {/* --- THE SPECIAL REVEAL: FLOATING MEMORY CARD --- */}
-        {openedMemory && (
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] memory-card z-100">
-            <div className="bg-[#0f1225]/80 backdrop-blur-xl border border-indigo-400/30 p-8 rounded-3xl shadow-[0_0_60px_rgba(99,102,241,0.2)]">
+      {/* --- THE FIX: FULL-SCREEN FLEX OVERLAY --- */}
+      {openedMemory && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none">
+          <div className="w-full max-w-[340px] memory-card pointer-events-auto">
+            <div className="bg-[#0f1225]/90 backdrop-blur-2xl border border-indigo-400/30 p-8 rounded-[32px] shadow-[0_0_60px_rgba(99,102,241,0.3)]">
               <Sparkles className="w-6 h-6 text-yellow-300 mx-auto mb-6 animate-pulse" />
               
               <div className="min-h-[140px] flex items-center justify-center">
@@ -145,14 +144,14 @@ const MemoryJar = ({ onClose }) => {
 
               <button 
                 onClick={putMemoryBack} 
-                className="mt-6 w-full py-3 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-200 hover:text-white transition-all flex items-center justify-center gap-2 text-sm tracking-wider"
+                className="mt-8 w-full py-4 rounded-2xl bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 text-indigo-100 hover:text-white transition-all flex items-center justify-center gap-2 text-sm font-bold tracking-widest uppercase"
               >
                 <ArrowLeft className="w-4 h-4" /> Put Memory Back
               </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
     </div>
   );
